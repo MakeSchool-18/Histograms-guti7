@@ -4,7 +4,7 @@
 from __future__ import division, print_function
 
 
-class Dictogram(dict):
+class Dictogram(dict):  # dict subclass
 
     def __init__(self, iterable=None):
         """Initialize this histogram as a new dict; update with given items"""
@@ -17,13 +17,16 @@ class Dictogram(dict):
     def update(self, iterable):
         """Update this histogram with the items in the given iterable"""
         for item in iterable:
-            # TODO: increment item count
-            pass
+            if item in self:
+                self[item] += 1
+            else:
+                self[item] = 1
+                self.types += 1
+            self.tokens += 1
 
     def count(self, item):
         """Return the count of the given item in this histogram, or 0"""
-        # TODO: retrieve item count
-        pass
+        return self[item] if item in self else 0
 
 
 class Listogram(list):
@@ -39,23 +42,34 @@ class Listogram(list):
     def update(self, iterable):
         """Update this histogram with the items in the given iterable"""
         for item in iterable:
-            # TODO: increment item count
-            pass
+            if self.__contains__(item):
+                index = self._index(item)
+                # tuples are inmutable
+                self[index] = (item, self[index][1] + 1)
+            else:
+                self.append((item, 1))
+                self.types += 1
+            self.tokens += 1
 
     def count(self, item):
         """Return the count of the given item in this histogram, or 0"""
-        # TODO: retrieve item count
-        pass
+        if not self.__contains__(item):
+            return 0
+        for word, count in self:
+            if item == word:
+                return count
+        # return 0 # not found
 
     def __contains__(self, item):
         """Return True if the given item is in this histogram, or False"""
-        # TODO: check if item is in histogram
-        pass
+        return type(self._index(item)) == int
 
     def _index(self, target):
         """Return the index of the (target, count) entry if found, or None"""
-        # TODO: implement linear search to find an item's index
-        pass
+        for i, (word, count) in enumerate(self):
+            if target == word:
+                return i
+        return None
 
 
 def test_histogram(text_list):
@@ -77,7 +91,7 @@ if __name__ == '__main__':
     import sys
     arguments = sys.argv[1:]  # exclude script name in first argument
     if len(arguments) == 0:
-        # test hisogram on letters in a word
+        # test histogram on letters in a word
         word = 'abracadabra'
         test_histogram(word)
         print()
