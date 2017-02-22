@@ -53,12 +53,15 @@ class Listogram(list):
 
     def count(self, item):
         """Return the count of the given item in this histogram, or 0"""
-        if not self.__contains__(item):
-            return 0
-        for word, count in self:
-            if item == word:
-                return count
+        # if not self.__contains__(item):
+        #     return 0
+        # for word, count in self:
+        #     if item == word:
+        #         return count
         # return 0 # not found
+        if self._index(item) != None:
+            return self[self._index(item)][1]
+        return 0
 
     def __contains__(self, item):
         """Return True if the given item is in this histogram, or False"""
@@ -79,6 +82,7 @@ def test_histogram(text_list):
     print('dictogram:', hist_dict)
 
     hist_list = Listogram(text_list)
+    print(hist_list.count('one'))
     print('listogram:', hist_list)
 
 
@@ -94,6 +98,7 @@ if __name__ == '__main__':
         # test histogram on letters in a word
         word = 'abracadabra'
         test_histogram(word)
+        print
         print()
         # test hisogram on words in a sentence
         sentence = 'one fish two fish red fish blue fish'
